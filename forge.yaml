@@ -24,6 +24,8 @@ spec:
       - action
       - trace
       - approval
+      - device
+      - network
     proofs:
       - creator
       - owner
@@ -33,6 +35,89 @@ spec:
       - publisher
       - deployer
       - runtime-subject
+      - device-subject
+      - network-subject
+
+  deviceReadiness:
+    required: true
+    principle: the operating system makes each device enterprise-ready before it can run agent workloads.
+    deviceAnchor: identity
+    capabilities:
+      - device-identity
+      - enrollment
+      - inventory
+      - posture
+      - attestation
+      - policy
+      - secrets
+      - workload-isolation
+      - remote-update
+      - rollback
+      - observability
+      - audit
+    lifecycle:
+      - manufacture
+      - enroll
+      - attest
+      - authorize
+      - provision
+      - run
+      - monitor
+      - update
+      - quarantine
+      - retire
+    runtimeTargets:
+      - laptop
+      - workstation
+      - server
+      - edge-node
+      - single-node-k3s
+      - cluster-node
+
+  globalNetworkReadiness:
+    required: true
+    principle: Kubernetes makes devices globally network-ready by turning enrolled devices into addressable, policy-controlled, service-discoverable nodes.
+    substrate: kubernetes
+    lightweightDefault: k3s
+    capabilities:
+      - node-identity
+      - service-discovery
+      - dns
+      - ingress
+      - egress-policy
+      - network-policy
+      - service-mesh-optional
+      - workload-scheduling
+      - remote-reconciliation
+      - multi-cluster-ready
+      - edge-ready
+      - global-addressability
+    resources:
+      - Node
+      - Namespace
+      - Service
+      - Ingress
+      - NetworkPolicy
+      - ServiceAccount
+      - Secret
+      - ConfigMap
+      - CustomResourceDefinition
+    agentResources:
+      - AgentDevice
+      - AgentNetwork
+      - AgentRuntime
+      - AgentRelease
+    lifecycle:
+      - join
+      - discover
+      - schedule
+      - route
+      - secure
+      - reconcile
+      - observe
+      - update
+      - drain
+      - remove
 
   identity:
     standard: did
@@ -45,12 +130,16 @@ spec:
       - artifact
       - runtime
       - tool
+      - device
+      - network
     bindings:
       kubernetes:
         - service-account
         - namespace
         - workload
         - crd
+        - node
+        - network-policy
       oci:
         - artifact
         - image
@@ -60,6 +149,16 @@ spec:
         - commit
         - tag
         - release
+      device:
+        - os
+        - node
+        - hardware
+        - attestation
+      network:
+        - service
+        - ingress
+        - dns
+        - endpoint
     lifecycle:
       - issued
       - active
@@ -73,6 +172,8 @@ spec:
     primitives:
       - agent
       - identity
+      - device
+      - network
       - skill
       - tool
       - memory
@@ -114,6 +215,8 @@ spec:
       - event
     resources:
       - AgentIdentity
+      - AgentDevice
+      - AgentNetwork
       - Agent
       - AgentSkill
       - AgentTool
