@@ -1,32 +1,32 @@
-# Agent MVP
+# Composable Agent MVP
 
 ## Product Definition
 
-An Agent MVP is the smallest useful agent-native software unit that can be defined, run, observed, and stopped.
+The Agent MVP is the smallest composable agent-native unit.
 
-It is not a platform, marketplace, registry, operating system, or enterprise control plane.
+It is not a CLI, platform, registry, marketplace, Kubernetes operator, or enterprise control plane.
 
-## One-Line Product
+## One-Line Definition
 
-**A configurable local agent runner that executes one goal using one runtime and one small set of tools.**
+**An agent is a composable identity-bound decision-action loop.**
 
-## User Promise
+## MVP Principle
 
-A developer can define an agent in one file and run it with one command.
+An agent must be assembled from explicit primitives, not hidden inside one prompt.
 
-```bash
-agent run
-```
+Each primitive must be readable, replaceable, and testable.
 
-## MVP Boundary
+## MVP Primitives
 
-The MVP has only five primitives:
+The MVP has seven primitives:
 
-1. **Identity** — the name and subject of the agent.
-2. **Goal** — what the agent is trying to accomplish.
-3. **Runtime** — the model or execution engine used by the agent.
-4. **Tools** — the limited capabilities the agent may call.
-5. **Memory** — the local context the agent may read or write.
+1. **Identity** — who or what the agent is.
+2. **Objective** — what the agent is trying to achieve.
+3. **Context** — what the agent currently knows.
+4. **Capabilities** — what the agent can use.
+5. **Decision** — how the agent chooses the next step.
+6. **Action** — what the agent does.
+7. **Trace** — what happened and why.
 
 ## Minimal Contract
 
@@ -36,54 +36,82 @@ kind: Agent
 metadata:
   name: hello-agent
 spec:
-  goal: Answer simple questions using the configured runtime.
-  runtime:
-    provider: local
-    model: default
-  tools: []
-  memory:
-    type: local
+  identity:
+    id: agent:hello-agent
+
+  objective:
+    description: Respond to one user message clearly.
+
+  context:
+    input: user-message
+
+  capabilities:
+    - name: respond
+      type: builtin
+
+  decision:
+    strategy: simple
+
+  actions:
+    - name: reply
+      type: message-response
+
+  trace:
+    enabled: true
+    store: local
 ```
 
-## Commands
-
-```bash
-agent init
-agent run
-agent stop
-```
-
-## What `agent init` Creates
+## Minimal Runtime Loop
 
 ```text
-agent.yaml
-README.md
+load agent contract
+  -> read context
+  -> evaluate objective
+  -> select capability
+  -> make decision
+  -> execute action
+  -> write trace
 ```
 
-## What `agent run` Does
+## MVP Output
 
-1. Reads `agent.yaml`.
-2. Validates required fields.
-3. Starts the configured runtime loop.
-4. Executes the goal using allowed tools.
-5. Writes a local run trace.
-
-## What `agent stop` Does
-
-Stops the running agent process.
-
-## MVP Outputs
+The MVP must produce:
 
 ```text
-running agent process
-local trace file
-basic status output
+agent response
+trace record
+```
+
+## First Product Test
+
+Given this input:
+
+```text
+Hello agent
+```
+
+The MVP should return:
+
+```text
+hello-agent responded
+```
+
+And write a trace showing:
+
+```text
+identity
+objective
+context
+decision
+action
+result
 ```
 
 ## Explicit Non-Goals
 
 The MVP does not include:
 
+- CLI as product
 - Kubernetes deployment
 - OCI packaging
 - DID or verifiable credentials
@@ -102,29 +130,10 @@ The MVP does not include:
 - memory graph
 - distributed network
 
-## Product Test
-
-The MVP is successful when this works:
-
-```bash
-agent init hello-agent
-cd hello-agent
-agent run
-```
-
-And the user can see:
-
-```text
-hello-agent is running
-```
-
 ## Roadmap After MVP
 
-After the MVP works, Agent Forge can package the agent:
+After this works, Agent Forge can package the agent into deployable artifacts.
 
-```bash
-agent-forge build
-agent-forge deploy
-```
+But the first milestone is only:
 
-But packaging and deployment are not part of the Agent MVP.
+**one composable agent definition, one runtime loop, one response, one trace.**
