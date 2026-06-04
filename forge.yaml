@@ -34,9 +34,33 @@ spec:
       - sign
       - publish
       - deploy
+      - reconcile
       - observe
       - evaluate
       - improve
+
+  orchestration:
+    style: kubernetes-native
+    lightweightDefault: k3s
+    model:
+      - crd
+      - controller
+      - reconciler
+      - desired-state
+      - status
+      - finalizer
+      - event
+    resources:
+      - Agent
+      - AgentSkill
+      - AgentTool
+      - AgentMemory
+      - AgentWorkflow
+      - AgentPolicy
+      - AgentRuntime
+      - AgentEvaluation
+      - AgentRelease
+    principle: agent artifacts are reconciled as Kubernetes resources, not only deployed as containers.
 
   source:
     standard: git
