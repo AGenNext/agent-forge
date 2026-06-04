@@ -3,9 +3,35 @@ kind: ForgeArtifact
 metadata:
   name: agent-forge
   owner: AGenNext
-  description: Lightweight CNCF-first forge contract for agent-native artifacts.
+  description: Lightweight CNCF-first forge contract for identity-anchored agent-native artifacts.
 spec:
   type: bundle
+
+  anchor:
+    primitive: identity
+    required: true
+    principle: no artifact, agent, action, release, or reconciliation is valid without a bound identity.
+    binds:
+      - artifact
+      - agent
+      - skill
+      - tool
+      - workflow
+      - policy
+      - runtime
+      - release
+      - action
+      - trace
+      - approval
+    proofs:
+      - creator
+      - owner
+      - operator
+      - approver
+      - signer
+      - publisher
+      - deployer
+      - runtime-subject
 
   agentNative:
     required: true
@@ -42,6 +68,7 @@ spec:
   orchestration:
     style: kubernetes-native
     lightweightDefault: k3s
+    identityBound: true
     model:
       - crd
       - controller
@@ -51,6 +78,7 @@ spec:
       - finalizer
       - event
     resources:
+      - AgentIdentity
       - Agent
       - AgentSkill
       - AgentTool
@@ -60,7 +88,7 @@ spec:
       - AgentRuntime
       - AgentEvaluation
       - AgentRelease
-    principle: agent artifacts are reconciled as Kubernetes resources, not only deployed as containers.
+    principle: agent artifacts are identity-bound Kubernetes resources, not only deployed containers.
 
   source:
     standard: git
