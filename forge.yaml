@@ -3,9 +3,40 @@ kind: ForgeArtifact
 metadata:
   name: agent-forge
   owner: AGenNext
-  description: CNCF-first composition and distribution contract for agent-native artifacts.
+  description: Lightweight CNCF-first forge contract for agent-native artifacts.
 spec:
   type: bundle
+
+  agentNative:
+    required: true
+    primitives:
+      - agent
+      - identity
+      - skill
+      - tool
+      - memory
+      - knowledge
+      - workflow
+      - policy
+      - model
+      - runtime
+      - configuration
+      - secret
+      - evaluation
+      - trace
+      - artifact
+    lifecycle:
+      - define
+      - decompose
+      - validate
+      - compose
+      - build
+      - sign
+      - publish
+      - deploy
+      - observe
+      - evaluate
+      - improve
 
   source:
     standard: git
@@ -29,14 +60,17 @@ spec:
 
   registry:
     standard: oci-distribution
-    implementation: harbor
+    lightweightDefault: zot
+    enterpriseDefault: harbor
     required: true
 
   deploy:
     target: kubernetes
+    lightweightDefault: k3s
     packageManager: helm
 
   gitops:
+    lightweightDefault: flux
     supported:
       - flux
       - argocd
@@ -54,9 +88,11 @@ spec:
     required: true
     baseline:
       - kubernetes
+      - k3s
       - helm
       - cloud-native-buildpacks
       - oci
+      - zot
       - harbor
       - flux
       - argocd
