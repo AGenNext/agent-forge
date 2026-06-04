@@ -1,0 +1,81 @@
+apiVersion: forge.agennext.io/v1alpha1
+kind: ForgeArtifact
+metadata:
+  name: agent-forge
+  owner: AGenNext
+  description: CNCF-first composition and distribution contract for agent-native artifacts.
+spec:
+  type: bundle
+
+  source:
+    standard: git
+    providerNeutral: true
+    repository: https://github.com/AGenNext/agent-forge
+
+  build:
+    standard: cloud-native-buildpacks
+    output: oci
+
+  package:
+    standard: oci
+    artifactTypes:
+      - agent
+      - skill
+      - workflow
+      - policy
+      - runtime
+      - connector
+      - bundle
+
+  registry:
+    standard: oci-distribution
+    implementation: harbor
+    required: true
+
+  deploy:
+    target: kubernetes
+    packageManager: helm
+
+  gitops:
+    supported:
+      - flux
+      - argocd
+
+  runtimeConfig:
+    standard: openfeature
+
+  policy:
+    engine: opa
+
+  observability:
+    standard: opentelemetry
+
+  cncfFirst:
+    required: true
+    baseline:
+      - kubernetes
+      - helm
+      - cloud-native-buildpacks
+      - oci
+      - harbor
+      - flux
+      - argocd
+      - openfeature
+      - opa
+      - opentelemetry
+
+  optionalIntegrations:
+    gitProviders:
+      - github
+      - gitlab
+      - forgejo
+      - gitea
+      - self-hosted-git
+    authorization:
+      - openfga
+      - authzen
+    identity:
+      - did
+      - vc
+      - sso
+      - scim
