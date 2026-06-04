@@ -3,14 +3,15 @@ kind: ForgeArtifact
 metadata:
   name: agent-forge
   owner: AGenNext
-  description: Lightweight CNCF-first forge contract for identity-anchored agent-native artifacts.
+  description: Lightweight CNCF-first forge contract for DID-anchored agent-native artifacts.
 spec:
   type: bundle
 
   anchor:
     primitive: identity
+    standard: did
     required: true
-    principle: no artifact, agent, action, release, or reconciliation is valid without a bound identity.
+    principle: no artifact, agent, action, release, or reconciliation is valid without a bound decentralized identifier.
     binds:
       - artifact
       - agent
@@ -32,6 +33,40 @@ spec:
       - publisher
       - deployer
       - runtime-subject
+
+  identity:
+    standard: did
+    credentials: verifiable-credentials
+    required: true
+    subjectTypes:
+      - human
+      - organization
+      - agent
+      - artifact
+      - runtime
+      - tool
+    bindings:
+      kubernetes:
+        - service-account
+        - namespace
+        - workload
+        - crd
+      oci:
+        - artifact
+        - image
+        - signature
+        - sbom
+      git:
+        - commit
+        - tag
+        - release
+    lifecycle:
+      - issued
+      - active
+      - suspended
+      - rotated
+      - revoked
+      - archived
 
   agentNative:
     required: true
@@ -88,7 +123,7 @@ spec:
       - AgentRuntime
       - AgentEvaluation
       - AgentRelease
-    principle: agent artifacts are identity-bound Kubernetes resources, not only deployed containers.
+    principle: agent artifacts are DID-bound Kubernetes resources, not only deployed containers.
 
   source:
     standard: git
@@ -162,8 +197,6 @@ spec:
     authorization:
       - openfga
       - authzen
-    identity:
-      - did
-      - vc
+    enterpriseIdentity:
       - sso
       - scim
