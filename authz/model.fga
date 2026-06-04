@@ -1,0 +1,55 @@
+model
+  schema 1.1
+
+type user
+
+type agent
+  relations
+    define owner: [user]
+    define operator: [user]
+
+type organization
+  relations
+    define admin: [user]
+    define member: [user]
+    define agent: [agent]
+
+type repository
+  relations
+    define owner: [organization]
+    define reader: [user, agent]
+    define writer: [user, agent]
+    define reviewer: [user, agent]
+    define can_read: reader or writer or reviewer or owner->member
+    define can_write: writer or owner->admin
+    define can_review: reviewer or writer
+
+type artifact
+  relations
+    define owner: [organization]
+    define reader: [user, agent]
+    define publisher: [user, agent]
+    define can_read: reader or publisher or owner->member
+    define can_publish: publisher or owner->admin
+
+type environment
+  relations
+    define owner: [organization]
+    define deployer: [user, agent]
+    define approver: [user]
+    define can_deploy: deployer or owner->admin
+    define can_approve: approver or owner->admin
+
+type tool
+  relations
+    define owner: [organization]
+    define caller: [user, agent]
+    define admin: [user]
+    define can_call: caller or owner->admin
+
+type workspace
+  relations
+    define owner: [organization]
+    define member: [user, agent]
+    define admin: [user]
+    define can_access: member or admin or owner->admin
